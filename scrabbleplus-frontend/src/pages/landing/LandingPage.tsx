@@ -29,7 +29,7 @@ export default function LandingPage() {
       </div>
 
       {/* Footer: 1 part */}
-      <div className="flex-[1] min-h-0">
+      <div className="flex-[0.5] h-full">
         <Footer />
       </div>
     </div>
