@@ -10,6 +10,7 @@ import Footer from "./sections/Footer";
 export default function LandingPage() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
+
       {/* Hero: 3 parts */}
       <div className="min-h-0">
         <Hero />
@@ -23,13 +24,13 @@ export default function LandingPage() {
         </div>
 
         {/* LobbyChat stays fixed (no overflow set) */}
-        <div className="basis-1/2 min-h-0">
+        <div className="basis-1/2 min-h-0 flex">
           <LobbyChat />
         </div>
       </div>
 
-      {/* Footer: 1 part */}
-      <div className="flex-[0.5] h-full">
+      {/* Footer: 1/2 part */}
+      <div className="flex-[1] h-full">
         <Footer />
       </div>
     </div>

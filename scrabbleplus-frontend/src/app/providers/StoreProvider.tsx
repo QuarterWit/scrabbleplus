@@ -1,6 +1,7 @@
-﻿import { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
+import { Provider } from "react-redux";
+import { store } from "../store";  // points to src/app/store/index.ts
 
-// Minimal no-op store provider (swap to Redux/Zustand later)
 export default function StoreProvider({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return <Provider store={store}>{children}</Provider>;
 }
