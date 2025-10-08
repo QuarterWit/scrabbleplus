@@ -63,20 +63,21 @@ function Tile({ x, y, size, ch, tileShadow }: TileProps) {
           letterSpacing: -1,
         }}
       />
-      {/[A-Z]/.test(letter) && (
-        <pixiText
-          text={String(pts)}
-          anchor={1}
-          x={size - 6}
-          y={size - 6}
-          style={{
-            fill: 0x2a2a2a,
-            fontSize: Math.max(10, Math.round(size * 0.14)),
-            fontWeight: "800",
-            fontFamily: fontFace,
-          }}
-        />
-      )}
+     {/[A-Z+]/.test(letter) && (
+  <pixiText
+    text={letter === "+" ? "?" : String(pts)}
+    anchor={1}
+    x={size - 6}
+    y={size - 6}
+    style={{
+      fill: 0x2a2a2a,
+      fontSize: Math.max(10, Math.round(size * 0.14)),
+      fontWeight: "800",
+      fontFamily: fontFace,
+    }}
+  />
+)}
+
     </pixiContainer>
   );
 }
