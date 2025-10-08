@@ -1,4 +1,4 @@
-package com.quarterwit.scrabbleplus_backend;
+package com.quarterwit.scrabbleplusbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
