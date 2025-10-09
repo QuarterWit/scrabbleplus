@@ -1,0 +1,33 @@
+server:
+  port: 8081
+---
+
+spring:
+  application:
+    name: scrabbleplus-backend
+  profiles:
+    active: dev
+
+---
+spring:
+  config.activate.on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:scrabble;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+  flyway.enabled: true
+  h2.console.enabled: true
+
+---
+spring:
+  config.activate.on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrabble
+    username: scrabble
+    password: scrabble
+  jpa:
+    hibernate.ddl-auto: validate
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway.enabled: true

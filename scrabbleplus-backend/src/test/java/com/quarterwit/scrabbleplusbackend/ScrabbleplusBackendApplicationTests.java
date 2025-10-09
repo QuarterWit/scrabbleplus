@@ -1,4 +1,4 @@
-package com.quarterwit.scrabbleplus_backend;
+package com.quarterwit.scrabbleplusbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,0 +1,88 @@
+@startuml
+!theme plain
+top to bottom direction
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+package "ScrabblePlus Backend" {
+
+  package "Auth" {
+    [AuthController]
+    [AuthService]
+    [AuthRepository]
+  }
+
+  package "Gameplay" {
+    [GameController]
+    [GameService]
+    [GameRepository]
+    [ScoringEngine]
+    [MoveValidator]
+  }
+
+  package "Player" {
+    [PlayerController]
+    [PlayerService]
+    [PlayerRepository]
+  }
+
+  package "Lobby" {
+    [LobbyController]
+    [LobbyService]
+    [LobbyRepository]
+    [ChatHandler]
+    [LobbyDTO]
+  }
+
+  package "Shared" {
+    [Security]
+    [Configuration]
+    [ExceptionHandling]
+    [Mapper]
+  }
+
+  database "PostgreSQL" as DB
+  database "Redis" as REDIS
+}
+
+' --- Relationships ---
+
+' Controllers → Services
+[AuthController]  --> [AuthService]
+[GameController]  --> [GameService]
+[PlayerController] --> [PlayerService]
+[LobbyController] --> [LobbyService]
+
+' Services → Repositories
+[AuthService]  --> [AuthRepository]
+[GameService]  --> [GameRepository]
+[PlayerService] --> [PlayerRepository]
+[LobbyService] --> [LobbyRepository]
+
+' Services → Internal Components
+[GameService] --> [ScoringEngine]
+[GameService] --> [MoveValidator]
+[LobbyService] --> [ChatHandler]
+[PlayerService] --> [LobbyService]
+
+' Repositories → Databases
+[AuthRepository] --> DB
+[GameRepository] --> DB
+[PlayerRepository] --> DB
+[LobbyRepository] --> DB
+
+' Cross-cutting concerns
+[Security] ..> [AuthController]
+[Security] ..> [GameController]
+[Configuration] ..> [AuthRepository]
+[Configuration] ..> [GameRepository]
+[ExceptionHandling] ..> [AuthController]
+[ExceptionHandling] ..> [GameController]
+[Mapper] ..> [GameService]
+[Mapper] ..> [PlayerService]
+
+' Cache usage
+[GameService] --> REDIS
+[LobbyService] --> REDIS
+
+@enduml
