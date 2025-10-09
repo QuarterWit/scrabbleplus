@@ -1,0 +1,857 @@
+﻿### Spring Project Source Dump
+Root: C:\Users\Figme\portfolio\scrabbleplus\scrabbleplus-backend
+Generated: 2025-10-08 23:56:00 -05:00
+Git: branch=boilerplate, commit=ae44e86, status=*dirty*
+
+---
+
+==== BEGIN FILE: pom.xml
+Size: 7787 bytes
+GitRef: boilerplate@ae44e86
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.quarterwit</groupId>
+    <artifactId>scrabbleplus-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>scrabbleplus-backend</name>
+    <description>ScrabblePlus</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <mapstruct.version>1.6.2</mapstruct.version>
+        <lombok.version>1.18.34</lombok.version>
+        <testcontainers.version>1.20.2</testcontainers.version>
+        <!-- keep encoding sane -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <!-- Pin Testcontainers via BOM (for consistent test deps) -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Core -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <!-- Caching (Redis optional, add config when you use it) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- DB drivers -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Migrations -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <!-- optional PG-specific module; flyway-core is usually enough -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- OpenAPI UI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- MapStruct (DTO ↔ Entity mappers) -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Devtools (runtime only) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers (Postgres, JUnit 5) -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Optional: configuration metadata if you use @ConfigurationProperties -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Ensure annotation processors (Lombok + MapStruct) run -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>${java.version}</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${project.parent.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <!-- keep devtools out of the repackaged fat jar -->
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-devtools</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\auth\AuthController.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\auth\AuthRepository.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\auth\AuthService.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\gameplay\gameplayController.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\gameplay\gameplayRepository.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\gameplay\gameplayService.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\lobby\LobbyController.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\lobby\lobbyRepository.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\lobby\lobbyService.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\dto\PlayerCreateRequest.java
+Size: 164 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player.dto;
+
+/**
+ * Sent from client to create a new player.
+ */
+public record PlayerCreateRequest(String username) { }
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\dto\PlayerDTO.java
+Size: 182 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player.dto;
+
+/**
+ * Standard response DTO for returning player info.
+ */
+public record PlayerDTO(Long id, String username, int score) { }
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\dto\PlayerSummaryDTO.java
+Size: 200 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player.dto;
+
+/**
+ * Lightweight summary view of a player (e.g. leaderboard, lobby list).
+ */
+public record PlayerSummaryDTO(String username, int score) { }
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\dto\PlayerUpdateRequest.java
+Size: 166 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player.dto;
+
+/**
+ * Used when updating an existing player's data.
+ */
+public record PlayerUpdateRequest(int newScore) { }
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\entity\Player.java
+Size: 445 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Player {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    private int score = 0;
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\PlayerController.java
+Size: 590 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player;
+import com.quarterwit.scrabbleplusbackend.player.dto.*; import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+@RestController @RequestMapping("/api/players")
+public class PlayerController {
+    private final PlayerService svc;
+    public PlayerController(PlayerService svc){ this.svc = svc; }
+
+    @PostMapping public PlayerDTO create(@RequestBody @Valid PlayerCreateRequest r){ return svc.create(r); }
+    @GetMapping("/{id}") public PlayerDTO get(@PathVariable Long id){ return svc.get(id); }
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\PlayerRepository.java
+Size: 368 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player;
+import com.quarterwit.scrabbleplusbackend.player.entity.Player;
+import org.springframework.data.jpa.repository.*; import java.util.*;
+public interface PlayerRepository extends JpaRepository<Player, Long> {
+    Optional<Player> findByUsername(String username);
+    List<Player> findTop10ByOrderByScoreDesc();
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\player\PlayerService.java
+Size: 868 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player;
+import com.quarterwit.scrabbleplusbackend.player.dto.*; import com.quarterwit.scrabbleplusbackend.player.entity.Player;
+import org.springframework.stereotype.Service; import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class PlayerService {
+    private final PlayerRepository repo;
+    public PlayerService(PlayerRepository repo){ this.repo = repo; }
+
+    @Transactional
+    public PlayerDTO create(PlayerCreateRequest r){
+        var p = new Player(); p.setUsername(r.username()); p.setScore(0);
+        p = repo.save(p);
+        return new PlayerDTO(p.getId(), p.getUsername(), p.getScore());
+    }
+
+    public PlayerDTO get(Long id){
+        var p = repo.findById(id).orElseThrow();
+        return new PlayerDTO(p.getId(), p.getUsername(), p.getScore());
+    }
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\ScrabbleplusBackendApplication.java
+Size: 353 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ScrabbleplusBackendApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ScrabbleplusBackendApplication.class, args);
+	}
+
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\shared\ApplicationConfig.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\shared\config\SecurityConfig.java
+Size: 789 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.shared.security;
+import org.springframework.context.annotation.*; import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html","/h2-console/**").permitAll()
+                        .anyRequest().permitAll())
+                .headers(h -> h.frameOptions(f -> f.disable())); // allow H2 console
+        return http.build();
+    }
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\shared\Mapper.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\shared\sharedController.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\shared\sharedRepository.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\java\com\quarterwit\scrabbleplusbackend\shared\sharedService.java
+Size: 0 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\resources\application.yml
+Size: 709 bytes
+GitRef: boilerplate@ae44e86
+
+```yaml
+server:
+  port: 8081
+---
+
+spring:
+  application:
+    name: scrabbleplus-backend
+  profiles:
+    active: dev
+
+---
+spring:
+  config.activate.on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:scrabble;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+  flyway.enabled: true
+  h2.console.enabled: true
+
+---
+spring:
+  config.activate.on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrabble
+    username: scrabble
+    password: scrabble
+  jpa:
+    hibernate.ddl-auto: validate
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway.enabled: true
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\main\resources\logback-spring.xml
+Size: 1211 bytes
+GitRef: boilerplate@ae44e86
+
+```xml
+<configuration>
+    <!-- Spring Boot defaults (pattern + colors) -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- Keep SQL summary, suppress bind noise -->
+    <logger name="org.hibernate.SQL" level="INFO"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="WARN"/>
+    <logger name="org.hibernate.orm.jdbc.bind" level="WARN"/>
+    <logger name="org.hibernate.engine.jdbc.spi.SqlExceptionHelper" level="ERROR"/>
+
+    <!-- Spring / Web logs (avoid excessive context output) -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.springframework.boot.autoconfigure" level="WARN"/>
+
+    <!-- Your app logs -->
+    <logger name="com.quarterwit.scrabbleplusbackend" level="INFO"/>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Optional: readable format -->
+    <springProperty scope="context" name="LOG_PATTERN"
+                    source="logging.pattern.console"/>
+
+</configuration>
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\test\java\com\quarterwit\scrabbleplusbackend\player\PlayerControllerWebMvcTest.java
+Size: 1604 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player;
+
+import com.quarterwit.scrabbleplusbackend.player.dto.PlayerDTO;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+// 🆕
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(PlayerController.class)
+class PlayerControllerWebMvcTest {
+
+    @Autowired MockMvc mvc;
+
+    // 🆕 replace @MockBean with @MockitoBean
+    @MockitoBean PlayerService playerService;
+
+    @Test
+    void getById_returns200AndBody() throws Exception {
+        // ✅ record has (Long, String, int)
+        when(
+                // ⬇️ use the real method name your service exposes:
+                // e.g., playerService.findById(1L)
+                playerService.findById(1L)
+        ).thenReturn(new PlayerDTO(1L, "alice", 0));
+
+        // ⬇️ align with your controller mapping (adjust if /api/players/{id})
+        mvc.perform(get("/players/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("alice"))
+                .andExpect(jsonPath("$.score").value(0)); // adapt third field name if different
+    }
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\test\java\com\quarterwit\scrabbleplusbackend\player\PlayerRepositoryTest.java
+Size: 959 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player;
+
+import com.quarterwit.scrabbleplusbackend.player.entity.Player;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+class PlayerRepositoryTest {
+
+    @Autowired PlayerRepository repo;
+
+    @Test
+    void save_and_findById() {
+        // ✅ construct with the minimal ctor/builder your entity supports
+        Player p = new Player(null, "carol", 0); // id null → generated; adapt fields
+        Player saved = repo.save(p);
+
+        var found = repo.findById(saved.getId()).orElseThrow();
+        assertThat(found.getId()).isNotNull();
+        // If you have a getter for the name-like field, assert it; otherwise skip.
+        // assertThat(found.getName()).isEqualTo("carol");
+    }
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\test\java\com\quarterwit\scrabbleplusbackend\player\PlayerServiceTest.java
+Size: 2460 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend.player;
+
+import com.quarterwit.scrabbleplusbackend.player.dto.PlayerCreateRequest;
+import com.quarterwit.scrabbleplusbackend.player.dto.PlayerDTO;
+import com.quarterwit.scrabbleplusbackend.player.entity.Player;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
+
+class PlayerServiceTest {
+
+    @Test
+    void findById_mapsEntityToDto() {
+        PlayerRepository repo = mock(PlayerRepository.class);
+        PlayerService service = new PlayerService(repo); // adjust ctor if needed
+
+        // ✅ construct entity using what your class provides (ctor/builder)
+        // Example patterns — pick the one that exists in your entity:
+        // Player p = new Player(1L, "alice", 0);
+        // Player p = Player.builder().id(1L).name("alice").score(0).build();
+        Player p = new Player(1L, "alice", 0); // <-- adapt to your actual API
+
+        when(repo.findById(1L)).thenReturn(java.util.Optional.of(p));
+
+        // ⬇️ call the real service method you have
+        PlayerDTO dto = service.findById(1L);
+
+        assertThat(dto.id()).isEqualTo(1L);
+        assertThat(dto.name()).isEqualTo("alice");
+        // assertThat(dto.score()).isEqualTo(0); // adapt if field differs
+        verify(repo).findById(1L);
+    }
+
+    @Test
+    void create_savesMappedEntity_andReturnsId() {
+        PlayerRepository repo = mock(PlayerRepository.class);
+        PlayerService service = new PlayerService(repo);
+
+        ArgumentCaptor<Player> captor = ArgumentCaptor.forClass(Player.class);
+
+        when(repo.save(any(Player.class))).thenAnswer(inv -> {
+            Player saved = inv.getArgument(0);
+            // ensure id is set (adapt if your entity sets id elsewhere)
+            saved.setId(42L); // if no setter, return a new Player(42L, …)
+            return saved;
+        });
+
+        // ✅ service expects a request object, not String
+        PlayerCreateRequest req = new PlayerCreateRequest("bob" /*, other required fields */);
+
+        Long id = service.create(req);
+
+        verify(repo).save(captor.capture());
+        // If no getName(), assert with what you have, e.g., captor.getValue().getUsername()
+        // assertThat(captor.getValue().getUsername()).isEqualTo("bob");
+        assertThat(id).isEqualTo(42L);
+    }
+}
+
+```
+
+==== END FILE
+
+
+==== BEGIN FILE: src\test\java\com\quarterwit\scrabbleplusbackend\ScrabbleplusBackendApplicationTests.java
+Size: 239 bytes
+GitRef: boilerplate@ae44e86
+
+```java
+package com.quarterwit.scrabbleplusbackend;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class ScrabbleplusBackendApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+
+```
+
+==== END FILE
+
+
+---
+### End of Dump
